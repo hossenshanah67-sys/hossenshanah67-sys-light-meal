@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f8f2" />
+  <title>轻食记 · 热量管理</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="meal-plan.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="page active" id="home-page" aria-label="首页">
+      <header class="topbar"><div><p class="eyebrow" id="date-label">10月11日 · 周日</p><h1>今天，吃得刚刚好</h1></div><button class="avatar" aria-label="个人设置">林</button></header>
+      <section class="calorie-card">
+        <div class="ring" id="calorie-ring"><div class="ring-inner"><strong id="remaining-calories">1,380</strong><span>千卡可摄入</span></div></div>
+        <div class="calorie-copy"><p>今日目标 <b id="daily-goal">1,800</b> 千卡</p><div class="progress-track"><i id="calorie-progress"></i></div><p class="muted">已摄入 <b id="consumed-calories">420</b> 千卡</p><button class="text-button" data-go="diary-page">查看今日记录 <span>→</span></button></div>
+      </section>
+      <section class="macro-section"><div class="section-title"><h2>三大营养素</h2><span>目标进度</span></div><div class="macro-grid" id="macro-summary"></div></section>
+      <section class="quick-actions"><button class="action-card" data-go="scan-page"><span class="action-icon camera">⌁</span><b>拍照识别</b><small>一拍看热量</small></button><button class="action-card" data-go="search-page"><span class="action-icon search">⌕</span><b>热量查询</b><small>食物随时查</small></button></section>
+      <section class="daily-plan-entry"><div><span>✦ 今日新鲜生成</span><h2>不知道吃什么？</h2><p>按每日目标搭配三餐，热量和营养一目了然。</p></div><button data-go="recommend-page">生成餐单 →</button></section>
+      <section class="recommend-section"><div class="section-title"><h2>减脂期食材</h2><button class="text-button" data-go="recommend-page">查看餐单 →</button></div><div class="recommend-row" id="home-recommendations"></div></section>
+    </section>
+
+    <section class="page" id="scan-page" aria-label="拍照识别">
+      <header class="subheader"><button class="back" data-go="home-page" aria-label="返回首页">←</button><h1>拍照估算份量</h1><button class="goal-button" id="open-vision-settings">设置</button></header>
+      <div class="scan-hero"><div class="scan-view" id="photo-view"><div class="plate-art" id="photo-placeholder">🥗</div><img id="photo-preview" class="hidden" alt="待识别的食物照片" /><p>俯拍整份食物，尽量露出餐盘边缘</p></div><label class="photo-button">⌁&nbsp; 拍照 / 选择照片<input id="photo-input" type="file" accept="image/jpeg,image/png,image/webp" hidden /></label></div>
+      <div class="scan-options"><label>餐盘 / 碗口直径（厘米，可选）<input id="reference-cm" type="number" min="5" max="60" step="0.5" placeholder="知道尺寸时填写，例如 23" inputmode="decimal" /></label><label>补充说明（可选）<input id="photo-context" type="text" maxlength="200" placeholder="例如：吃了半份、清蒸、酱料未吃" /></label></div>
+      <p class="scan-tip">单张照片无法直接称重；餐具尺寸可辅助估算。油、酱料和遮挡会影响结果。</p>
+      <button class="primary-button" id="recognize-photo" disabled>先选择食物照片</button>
+      <p class="privacy-note" id="vision-service-status">识别服务尚未设置。点击识别才会将照片发往你配置的服务，可能产生调用费用。</p>
+      <p class="scan-status hidden" id="scan-status" role="status" aria-live="polite"></p>
+      <section class="result-card hidden" id="scan-result"><span class="pill" id="scan-source-label">AI 估算 · 待确认</span><h2>这份食物的热量</h2><div class="scan-total"><strong id="scan-kcal">0</strong><span> 千卡</span><small id="scan-range"></small></div><div class="result-macros" id="scan-macros"></div><div id="scan-items"></div><button class="text-button" id="add-scan-item">＋ 补充食物 / 烹饪用油</button><div id="scan-notes" class="scan-notes"></div><p class="scan-tip">请选择对应的食物和食用量。内置营养值为参考估算，外卖、混合菜与包装食品可有较大差异。</p><label class="confirm-check"><input type="checkbox" id="scan-confirm" /> 我已核对食物、份量和额外用油</label><button class="primary-button" id="add-scan-result" disabled>确认并加入今日</button></section>
+      <button class="secondary-button" id="manual-scan">手动记录这份食物</button>
+    </section>
+
+    <section class="page" id="recommend-page" aria-label="减脂推荐">
+      <header class="subheader"><button class="back" data-go="home-page">←</button><h1>每日减脂餐</h1><span></span></header>
+      <div class="recommend-intro"><span>✦</span><div><b>本地生成，今天吃得更省心</b><p>以你的 <b id="plan-goal-label">1,800</b> 千卡目标估算；食材与份量都可按实际调整。</p></div></div>
+      <section class="plan-controls"><label>不想吃的食材（可选，最多 3 项）<input id="plan-exclusions" maxlength="60" placeholder="例如：鸡胸肉、牛肉、豆腐" /></label><button class="primary-button" id="generate-plan">↻ 生成今天的餐单</button></section>
+      <section id="daily-plan" aria-live="polite"></section>
+      <div class="section-title"><h2>可替换食材</h2><span>点 ＋ 可手动记录</span></div>
+      <div class="tabs" id="recommend-tabs"><button class="selected" data-filter="all">全部</button><button data-filter="protein">优质蛋白</button><button data-filter="staple">主食</button><button data-filter="vegetable">蔬菜</button></div>
+      <div class="food-list" id="recommend-list"></div>
+    </section>
+
+    <section class="page" id="search-page" aria-label="热量查询">
+      <header class="subheader"><button class="back" data-go="home-page">←</button><h1>食物热量</h1><span></span></header>
+      <label class="search-box"><span>⌕</span><input id="food-search" placeholder="搜索食物，例如：鸡蛋、米饭" /><button id="clear-search" aria-label="清除搜索">×</button></label>
+      <p class="search-hint">常用食物</p><div class="chips" id="quick-searches"></div>
+      <div class="search-results" id="search-results"></div>
+    </section>
+
+    <section class="page" id="diary-page" aria-label="每日记录">
+      <header class="subheader"><button class="back" data-go="home-page">←</button><h1>今日饮食</h1><button class="goal-button" id="edit-goal">目标</button></header>
+      <section class="diary-total"><p>今日已摄入</p><strong><span id="diary-total">420</span> <small>千卡</small></strong><div class="macro-grid compact" id="diary-macros"></div></section>
+      <section class="meal-section"><div class="meal-title"><h2>饮食记录</h2><button class="add-mini" id="open-add-food">＋ 添加食物</button></div><div id="diary-list"></div></section>
+    </section>
+    <nav class="tabbar"><button class="nav active" data-go="home-page"><span>⌂</span>首页</button><button class="nav" data-go="scan-page"><span class="scan-nav">⌁</span>识别</button><button class="nav" data-go="search-page"><span>⌕</span>查询</button><button class="nav" data-go="diary-page"><span>▤</span>记录</button></nav>
+  </main>
+  <div class="modal hidden" id="food-modal"><div class="modal-sheet"><button class="modal-close" data-close="food-modal">×</button><h2 id="modal-title">加入今日饮食</h2><p id="modal-meta"></p><label><span id="food-amount-label">食用量（克）</span><input id="food-amount" type="number" min="0.1" max="5000" step="0.1" value="100" /></label><div class="modal-nutrients" id="modal-nutrients"></div><button class="primary-button" id="confirm-add-food">加入今日</button></div></div>
+  <div class="modal hidden" id="goal-modal"><div class="modal-sheet"><button class="modal-close" data-close="goal-modal">×</button><h2>设置每日目标</h2><p>可按减脂计划自行调整，营养素目标会同步更新。</p><label>每日热量目标（千卡）<input id="goal-input" type="number" min="800" max="6000" value="1800" /></label><button class="primary-button" id="save-goal">保存目标</button></div></div>
+  <div class="modal hidden" id="vision-modal" role="dialog" aria-modal="true" aria-labelledby="vision-title"><div class="modal-sheet"><button class="modal-close" data-close="vision-modal" aria-label="关闭设置">×</button><h2 id="vision-title">联网识别设置</h2><p>手机直接调用视觉模型。API Key 只保留到本次应用关闭；没有内置密钥，首次使用需自行开通服务。</p><label>服务<select id="vision-provider"><option value="dashscope">阿里云百炼 · 北京</option><option value="custom">自定义兼容服务</option></select></label><label>HTTPS 接口地址<input id="vision-endpoint" type="url" autocomplete="off" spellcheck="false" value="https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions" /></label><label>模型名称<input id="vision-model" value="qwen3-vl-flash" autocomplete="off" spellcheck="false" /></label><label>API Key<input id="vision-key" type="password" autocomplete="off" spellcheck="false" placeholder="只在本机本次会话使用" /></label><p class="privacy-note">照片与 API Key 会发送到上述 HTTPS 服务地址。自定义服务需支持图片输入和 JSON 输出，请仅填入你信任的服务。</p><p id="vision-settings-error" class="scan-status hidden" role="alert"></p><button class="primary-button" id="save-vision-settings">使用这些设置</button><button class="secondary-button" id="forget-vision-key">清除本次密钥</button></div></div>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="nutrition.js"></script>
+  <script src="meal-plan.js"></script>
+  <script src="vision-contract.js"></script>
+  <script src="app.js"></script>
+  <script src="photo-scan.js"></script>
+</body>
+</html>
